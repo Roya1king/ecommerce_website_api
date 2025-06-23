@@ -99,7 +99,7 @@ DATABASES={
         "USER": "postgres",
         "PASSWORD": os.getenv("PG_PASSWORD"),
         "HOST": os.getenv("PG_HOST"),
-        "PORT": os.getenv("PG_PORT")  # Default PostgreSQL port
+        "PORT": os.getenv("PG_PORT", "5432"), # Default PostgreSQL port
     }
 }
 
