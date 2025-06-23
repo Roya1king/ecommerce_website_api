@@ -13,7 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
-# endpoint_secret = settings.WEBHOOK_SECRET
+endpoint_secret = settings.WEBHOOK_SECRET
 
 User=get_user_model()
  

@@ -82,26 +82,26 @@ WSGI_APPLICATION = "ecommerceApiProject.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# DB=os.getenv("DB_TYPE")
+DB=os.getenv("DB_TYPE")
 
-# if not DB:
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.sqlite3",
-#             "NAME": BASE_DIR / "db.sqlite3",
-#         }
-#     }
-# else:
-DATABASES={
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "railway",
-        "USER": "postgres",
-        "PASSWORD": os.getenv("PG_PASSWORD"),
-        "HOST": os.getenv("PG_HOST"),
-        "PORT": os.getenv("PG_PORT", "5432"), # Default PostgreSQL port
+if not DB:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    DATABASES={
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "railway",
+            "USER": "postgres",
+            "PASSWORD": os.getenv("PG_PASSWORD"),
+            "HOST": os.getenv("PG_HOST"),
+            "PORT": os.getenv("PG_PORT", "5432"), # Default PostgreSQL port
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -158,3 +158,4 @@ AUTH_USER_MODEL = "apiApp.CustomUser"
 
 STRIPE_PUBLIC_KEY=os.getenv("STRIPE_PUBLIC_KEY")
 STRIPE_SECRET_KEY=os.getenv("STRIPE_SECRET_KEY")
+WEBHOOK_SECRET=os.getenv("WEBHOOK_SECRET")
