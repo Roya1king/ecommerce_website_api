@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+ecommerceEnv/
+
+# Environment variables
+.env
+
+# SQLite DB
+db.sqlite3
+
+# Media / uploads
+/media/
+
+# VSCode / IDE stuff
+.vscode/
+*.swp
+
+# Other
+*.log
