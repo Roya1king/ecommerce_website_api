@@ -26,4 +26,3 @@ urlpatterns = [
 ]
 
 
-# 4:05

@@ -216,11 +216,11 @@ def create_checkout_session(request):
 
            
             mode='payment',
-            # success_url="http://localhost:3000/success",
-            # cancel_url="http://localhost:3000/cancel",
+            success_url="http://localhost:3000/success",
+            cancel_url="http://localhost:3000/failed",
 
-            success_url="https://next-shop-self.vercel.app/success",
-            cancel_url="https://next-shop-self.vercel.app/failed",
+            # success_url="https://next-shop-self.vercel.app/success",
+            # cancel_url="https://next-shop-self.vercel.app/failed",
             metadata = {"cart_code": cart_code}
         )
         return Response({'data': checkout_session})
