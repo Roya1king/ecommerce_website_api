@@ -1,11 +1,12 @@
 import stripe
+import time 
 from django.conf import settings
 from django.shortcuts import get_object_or_404, render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Category, Product,Cart,CartItem, Review, Wishlist,OrderItem,Order
-from .serializers import CategoryDetailSerializer, CategoryListSerializer, ProductListSerializer, ProductDetailSerializer,CartSerializer, ReviewSerializer, WishlistSerializer
+from .serializers import CategoryDetailSerializer, CategoryListSerializer, ProductListSerializer, ProductDetailSerializer,CartSerializer, ReviewSerializer, SimpleCartSerializer, UserSerializer, WishlistSerializer
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.http import HttpResponse
@@ -51,8 +52,8 @@ def category_detail(request, slug):
 
 @api_view(['POST'])
 def add_to_cart(request):
-    cart_code = request.GET.get('cart_code')
-    product_id = request.GET.get('product_id')
+    cart_code = request.data.get('cart_code')
+    product_id = request.data.get('product_id')
 
     cart, created = Cart.objects.get_or_create(cart_code=cart_code)
     product= Product.objects.get(id=product_id)
@@ -66,8 +67,8 @@ def add_to_cart(request):
 
 @api_view(['PUT'])
 def update_cartitem_quantity(request):
-    cartitem_id= request.GET.get('item_id')
-    quantity= request.GET.get('quantity')
+    cartitem_id= request.data.get('item_id')
+    quantity= request.data.get('quantity')
     quantity= int(quantity) if quantity else 1
 
     cartitem=CartItem.objects.get(id=int(cartitem_id))
@@ -159,6 +160,16 @@ def add_to_wishlist(request):
     new_wishlist = Wishlist.objects.create(user=user, product=product)
     serializer = WishlistSerializer(new_wishlist)
     return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(["GET"])
+def product_in_wishlist(request):
+    email = request.query_params.get("email")
+    product_id = request.query_params.get("product_id")
+
+    if Wishlist.objects.filter(product__id=product_id, user__email=email).exists():
+        return Response({"product_in_wishlist": True})
+    return Response({"product_in_wishlist": False})
+
 
 @api_view(['GET'])
 def product_search(request):
@@ -265,3 +276,58 @@ def fulfill_checkout(session, cart_code):
                                              quantity=item.quantity)
     
     cart.delete()
+
+
+@api_view(["POST"])
+def create_user(request):
+    username = request.data.get("username")
+    email = request.data.get("email")
+    first_name = request.data.get("first_name")
+    last_name = request.data.get("last_name")
+    profile_picture_url = request.data.get("profile_picture_url")
+
+    new_user = User.objects.create(username=username, email=email,
+                                       first_name=first_name, last_name=last_name, profile_picture_url=profile_picture_url)
+    serializer = UserSerializer(new_user)
+    return Response(serializer.data)
+
+
+@api_view(["GET"])
+def existing_user(request, email):
+    try:
+        User.objects.get(email=email)
+        return Response({"exists": True}, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+        return Response({"exists": False}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+def get_cart(request, cart_code):
+    cart = Cart.objects.filter(cart_code=cart_code).first()
+    
+    if cart:
+        serializer = CartSerializer(cart)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    return Response({"error": "Cart not found."}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+def get_cart_stat(request):
+    cart_code = request.query_params.get("cart_code")
+    cart = Cart.objects.filter(cart_code=cart_code).first()
+
+    if cart:
+        serializer = SimpleCartSerializer(cart)
+        return Response(serializer.data)
+    return Response({"error": "Cart not found."}, status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['GET'])
+def product_in_cart(request):
+    cart_code = request.query_params.get("cart_code")
+    product_id = request.query_params.get("product_id")
+    
+    cart = Cart.objects.filter(cart_code=cart_code).first()
+    product = Product.objects.get(id=product_id)
+    
+    product_exists_in_cart = CartItem.objects.filter(cart=cart, product=product).exists()
+
+    return Response({'product_in_cart': product_exists_in_cart})
