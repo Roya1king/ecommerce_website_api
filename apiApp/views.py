@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Category, Product,Cart,CartItem, Review, Wishlist,OrderItem,Order
-from .serializers import CategoryDetailSerializer, CategoryListSerializer, ProductListSerializer, ProductDetailSerializer,CartSerializer, ReviewSerializer, SimpleCartSerializer, UserSerializer, WishlistSerializer
+from .serializers import CategoryDetailSerializer, CategoryListSerializer, OrderSerializer, ProductListSerializer, ProductDetailSerializer,CartSerializer, ReviewSerializer, SimpleCartSerializer, UserSerializer, WishlistSerializer
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.http import HttpResponse
@@ -331,3 +331,10 @@ def product_in_cart(request):
     product_exists_in_cart = CartItem.objects.filter(cart=cart, product=product).exists()
 
     return Response({'product_in_cart': product_exists_in_cart})
+
+@api_view(['GET'])
+def get_orders(request):
+    email = request.query_params.get("email")
+    orders = Order.objects.filter(customer_email=email)
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)

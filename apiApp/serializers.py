@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apiApp.models import Product, Category, CartItem,Cart, ProductRating, Review, Wishlist  # ✅ Correct import
+from apiApp.models import Order, OrderItem, Product, Category, CartItem,Cart, ProductRating, Review, Wishlist  # ✅ Correct import
 from django.contrib.auth import get_user_model  # ✅ Use get_user_model() to get the user model
 
 class ProductListSerializer(serializers.ModelSerializer):
@@ -138,7 +138,18 @@ class SimpleCartSerializer(serializers.ModelSerializer):
         num_of_items = sum([item.quantity for item in cart.cartitems.all()])
         return num_of_items
 
+class OrderItemSerializer(serializers.ModelSerializer):
+    product = ProductListSerializer(read_only=True)
+    class Meta:
+        model = OrderItem
+        fields = ["id", "quantity", "product"]
 
+
+class OrderSerializer(serializers.ModelSerializer):
+    items = OrderItemSerializer(read_only=True, many=True)
+    class Meta:
+        model = Order 
+        fields = ["id", "stripe_checkout_id", "amount", "items", "status", "created_at"]
 
 
 
