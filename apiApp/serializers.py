@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apiApp.models import Order, OrderItem, Product, Category, CartItem,Cart, ProductRating, Review, Wishlist  # ✅ Correct import
+from apiApp.models import CustomerAddress, Order, OrderItem, Product, Category, CartItem,Cart, ProductRating, Review, Wishlist  # ✅ Correct import
 from django.contrib.auth import get_user_model  # ✅ Use get_user_model() to get the user model
 
 class ProductListSerializer(serializers.ModelSerializer):
@@ -150,6 +150,12 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order 
         fields = ["id", "stripe_checkout_id", "amount", "items", "status", "created_at"]
+
+class CustomerAddressSerializer(serializers.ModelSerializer):
+    customer = UserSerializer(read_only=True)
+    class Meta:
+        model = CustomerAddress
+        fields = "__all__"
 
 
 

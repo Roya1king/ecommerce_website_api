@@ -5,8 +5,8 @@ from django.shortcuts import get_object_or_404, render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Category, Product,Cart,CartItem, Review, Wishlist,OrderItem,Order
-from .serializers import CategoryDetailSerializer, CategoryListSerializer, OrderSerializer, ProductListSerializer, ProductDetailSerializer,CartSerializer, ReviewSerializer, SimpleCartSerializer, UserSerializer, WishlistSerializer
+from .models import Category, CustomerAddress, Product,Cart,CartItem, Review, Wishlist,OrderItem,Order
+from .serializers import CategoryDetailSerializer, CategoryListSerializer, CustomerAddressSerializer, OrderSerializer, ProductListSerializer, ProductDetailSerializer,CartSerializer, ReviewSerializer, SimpleCartSerializer, UserSerializer, WishlistSerializer
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.http import HttpResponse
@@ -345,3 +345,39 @@ def get_orders(request):
     orders = Order.objects.filter(customer_email=email)
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
+
+@api_view(["POST"])
+def add_address(request):
+    email = request.data.get("email")
+    street = request.data.get("street")
+    city = request.data.get("city")
+    state = request.data.get("state")
+    phone = request.data.get("phone")
+
+    if not email:
+        return Response({"error": "Email is required"}, status=400)
+    
+    customer = User.objects.get(email=email)
+
+    address, created = CustomerAddress.objects.get_or_create(
+        customer=customer)
+    address.email = email 
+    address.street = street 
+    address.city = city 
+    address.state = state
+    address.phone = phone 
+    address.save()
+
+    serializer = CustomerAddressSerializer(address)
+    return Response(serializer.data)
+
+
+@api_view(["GET"])
+def get_address(request):
+    email = request.query_params.get("email") 
+    address = CustomerAddress.objects.filter(customer__email=email)
+    if address.exists():
+        address = address.last()
+        serializer = CustomerAddressSerializer(address)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response({"error": "Address not found"}, status=200)
