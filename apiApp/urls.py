@@ -17,6 +17,7 @@ urlpatterns = [
     path('delete_review/<int:pk>/', views.delete_review, name='delete-review'),
     path('delete_cartitem/<int:pk>/', views.delete_cartitem, name='delete-cartitem'),
     path('add_to_wishlist/', views.add_to_wishlist, name='add-to-wishlist'),
+    path("my_wishlists", views.my_wishlists, name="my_wishlists"),
     path("product_in_wishlist", views.product_in_wishlist, name="product_in_wishlist"),
     path('search', views.product_search, name='search'),
     path('create_checkout_session/',views.create_checkout_session,name='create_checkout_session'),

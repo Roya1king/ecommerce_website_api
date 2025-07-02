@@ -162,6 +162,13 @@ def add_to_wishlist(request):
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(["GET"])
+def my_wishlists(request):
+    email = request.query_params.get("email")
+    wishlists = Wishlist.objects.filter(user__email=email)
+    serializer = WishlistSerializer(wishlists, many=True)
+    return Response(serializer.data)
+
+@api_view(["GET"])
 def product_in_wishlist(request):
     email = request.query_params.get("email")
     product_id = request.query_params.get("product_id")
