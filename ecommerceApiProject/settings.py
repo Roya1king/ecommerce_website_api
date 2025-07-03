@@ -63,6 +63,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
+    'https://shoppit-smoky.vercel.app'
 ]
 
 ROOT_URLCONF = "ecommerceApiProject.urls"
