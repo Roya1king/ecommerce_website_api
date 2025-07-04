@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     "dotenv",
     "stripe",
     "corsheaders",
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -99,16 +101,30 @@ WSGI_APPLICATION = "ecommerceApiProject.wsgi.application"
 #         }
 #     }
 # else:
-DATABASES={
+#Railways
+# DATABASES={
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "railway",
+#         "USER": "postgres",
+#         "PASSWORD": os.getenv("PG_PASSWORD"),
+#         "HOST": os.getenv("PG_HOST"),
+#         "PORT": os.getenv("PG_PORT", "5432"), # Default PostgreSQL port
+#     }
+# }
+
+#Render
+DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "railway",
-        "USER": "postgres",
+        "NAME": os.getenv("PG_NAME"),
+        "USER": os.getenv("PG_USER"),
         "PASSWORD": os.getenv("PG_PASSWORD"),
         "HOST": os.getenv("PG_HOST"),
-        "PORT": os.getenv("PG_PORT", "5432"), # Default PostgreSQL port
+        "PORT": os.getenv("PG_PORT", "5432"),  # Default PostgreSQL port
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -148,16 +164,24 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR/"staticfiles"
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
- 
-MEDIA_URL = "media/"
 
-MEDIA_ROOT = BASE_DIR / "media"
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+}
+
+
+ 
+# MEDIA_URL = "media/"
+# MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
