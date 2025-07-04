@@ -223,8 +223,8 @@ def create_checkout_session(request):
 
            
             mode='payment',
-            success_url="http://localhost:3000/success",
-            cancel_url="http://localhost:3000/failed",
+            success_url="https://shoppit-smoky.vercel.app/success",
+            cancel_url="https://shoppit-smoky.vercel.app/failed",
 
             # success_url="https://next-shop-self.vercel.app/success",
             # cancel_url="https://next-shop-self.vercel.app/failed",
