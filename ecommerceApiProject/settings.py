@@ -28,7 +28,9 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 DEBUG = True
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://ecommercewebsiteapi-production.up.railway.app",]
+    "https://ecommercewebsiteapi-production.up.railway.app",
+    "https://ecommerce-website-api-zvg2.onrender.com", # Render
+    ]
 
 ALLOWED_HOSTS = ["*"]
 
